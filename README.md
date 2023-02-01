@@ -21,7 +21,10 @@ roslaunch assignment_2_2022 assignment2.launch
 The windows that will appear are:
 - **Gazebo**, with the simulation of the robot in the environment.
 - **RViz**, to also visualize the robot.
-- All the scripts will run in the same terminal window used to do the roslaunch, the script *subscriber.py* should be executed separately on another terminal so that the menu displayed by *client.py* stays readable for the user.
+- All the scripts will run in the same terminal window used to do the roslaunch, the script *subscriber.py* should be executed separately on another terminal so that the menu displayed by *client.py* stays readable for the user. For that aim, do:
+```console
+roslaunch assignment_2_2022 assignment2.launch
+```
 
 ## Contents
 The package *assignment_2_2022* is organized as follows:
