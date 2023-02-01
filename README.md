@@ -6,7 +6,7 @@ This repository contains the ROS package developed for the second assignment of 
 
 
 ## Building and running
-The ros package can be built by executing the command `catkin_make` within the root directory of the ROS workspace.
+First of all copy the package folder *assignment_2_2022* into the ROS src folder. The ros package can be built by executing the command `catkin_make` within the root directory of the ROS workspace.
 
 It may be the case that the scripts are not executable, to make these Python scripts executable, it is enough to execute the following command inside the `scripts` folder:
 ```console
