@@ -23,8 +23,9 @@ The windows that will appear are:
 - **RViz**, to also visualize the robot.
 - All the scripts will run in the same terminal window used to do the roslaunch, the script *subscriber.py* should be executed separately on another terminal so that the menu displayed by *client.py* stays readable for the user. For that aim, do:
 ```console
-roslaunch assignment_2_2022 assignment2.launch
+rosrun assignment_2_2022 subscriber.py
 ```
+On the other hand, it is possible to display the execution of *subscriber.py* in the same screen by addind the parameter "output="screen" in the launch file.
 
 ## Contents
 The package *assignment_2_2022* is organized as follows:
