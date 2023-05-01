@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scripts.goal_counter &mdash; assignment_2_2022 1.0 documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/graphviz.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script src="../../_static/sphinx_highlight.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../../index.html" class="icon icon-home">
+            assignment_2_2022
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <!-- Local TOC -->
+              <div class="local-toc"></div>
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">assignment_2_2022</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="../index.html">Module code</a></li>
+      <li class="breadcrumb-item active">scripts.goal_counter</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scripts.goal_counter</h1><div class="highlight"><pre>
+<span></span><span class="ch">#!/usr/bin/env python3</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">.. module:: goal_counter</span>
+<span class="sd">    :platform: Unix</span>
+<span class="sd">    :synopsis: Node B</span>
+<span class="sd">.. moduleauthor:: Miguel Angel Sempere msemperevicente@gmail.com</span>
+
+<span class="sd">Node that implements the service *goal_count*, which, when called, prints </span>
+<span class="sd">the number of goals reached and cancelled. It uses the information published on </span>
+<span class="sd">the topic */reaching_goal/feedback* to keep track of the reached and cancelled goals.</span>
+
+<span class="sd">Subscribes to:</span>
+<span class="sd">    /reaching_goal/feedback</span>
+<span class="sd">    </span>
+<span class="sd">Publishes to:</span>
+<span class="sd">	None</span>
+
+<span class="sd">Services: </span>
+<span class="sd">	goal_count</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="c1"># node B </span>
+<span class="c1"># when called, prints the number of goals reached and cancelled</span>
+
+<span class="kn">import</span> <span class="nn">rospy</span>
+<span class="kn">from</span> <span class="nn">assignment_2_2022.srv</span> <span class="kn">import</span> <span class="n">GoalCount</span><span class="p">,</span> <span class="n">GoalCountResponse</span>
+<span class="kn">from</span> <span class="nn">assignment_2_2022.msg</span> <span class="kn">import</span> <span class="n">PlanningActionFeedback</span>
+
+
+<span class="c1"># global variables to count how many goals have been reached and canceled</span>
+<span class="n">goals_reached</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">goals_cancelled</span> <span class="o">=</span> <span class="mi">0</span>
+
+<div class="viewcode-block" id="check_feedback"><a class="viewcode-back" href="../../index.html#scripts.goal_counter.check_feedback">[docs]</a><span class="k">def</span> <span class="nf">check_feedback</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Callback function from the topic */reaching_goal/feedback*. </span>
+<span class="sd">	It reads the message of the feedback status and increments the </span>
+<span class="sd">	number of cancelled and reached goals depending on its value. </span>
+<span class="sd">	It also prints an information message with the modified variable.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>	
+
+	<span class="k">global</span> <span class="n">goals_reached</span><span class="p">,</span> <span class="n">goals_cancelled</span>
+	<span class="c1"># check the feedback message </span>
+	<span class="k">if</span> <span class="n">data</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="n">stat</span> <span class="o">==</span> <span class="s2">&quot;Target cancelled!&quot;</span><span class="p">:</span>
+		<span class="n">goals_cancelled</span> <span class="o">+=</span> <span class="mi">1</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Cancelled goal: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">goals_cancelled</span><span class="p">))</span>
+	<span class="k">elif</span> <span class="n">data</span><span class="o">.</span><span class="n">feedback</span><span class="o">.</span><span class="n">stat</span> <span class="o">==</span> <span class="s2">&quot;Target reached!&quot;</span><span class="p">:</span>
+		<span class="n">goals_reached</span> <span class="o">+=</span> <span class="mi">1</span>
+		<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Reached goal: </span><span class="si">{}</span><span class="s2"> &quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">goals_reached</span><span class="p">))</span></div>
+	   
+<div class="viewcode-block" id="handle_goal_tracker"><a class="viewcode-back" href="../../index.html#scripts.goal_counter.handle_goal_tracker">[docs]</a><span class="k">def</span> <span class="nf">handle_goal_tracker</span><span class="p">(</span><span class="n">req</span><span class="p">):</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Callback function from the service *goal_count* that prints </span>
+<span class="sd">	the number of goals reached and cancelled. These values are also </span>
+<span class="sd">	retuned as a server response message of the type </span>
+<span class="sd">	``assignment_2_2022::GoalCountResponse``.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>	
+
+	<span class="k">global</span> <span class="n">goals_reached</span><span class="p">,</span> <span class="n">goals_cancelled</span>
+	<span class="c1"># create variable of the custom service</span>
+	<span class="n">data</span> <span class="o">=</span> <span class="n">GoalCountResponse</span><span class="p">()</span>
+	<span class="n">data</span><span class="o">.</span><span class="n">reached</span> <span class="o">=</span> <span class="n">goals_reached</span> 
+	<span class="n">data</span><span class="o">.</span><span class="n">cancelled</span> <span class="o">=</span> <span class="n">goals_cancelled</span>
+	<span class="c1"># print reached and cancelled goals</span>
+	<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Goals reached: &quot;</span><span class="p">,</span> <span class="n">goals_reached</span><span class="p">,</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Goals canceled: &quot;</span><span class="p">,</span> <span class="n">goals_cancelled</span><span class="p">)</span>
+	
+	<span class="k">return</span> <span class="n">data</span></div>
+	
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../index.html#scripts.goal_counter.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+<span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">	Main.</span>
+
+<span class="sd">	&quot;&quot;&quot;</span>	
+	<span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s1">&#39;goal_counter&#39;</span><span class="p">)</span>
+	<span class="c1"># create a service that publishes the goal position of the robot</span>
+	<span class="n">srv</span> <span class="o">=</span> <span class="n">rospy</span><span class="o">.</span><span class="n">Service</span><span class="p">(</span><span class="s1">&#39;goal_count&#39;</span><span class="p">,</span> <span class="n">GoalCount</span><span class="p">,</span> <span class="n">handle_goal_tracker</span><span class="p">)</span>
+	<span class="c1"># subscribe the feedback of the goal to check which message is written</span>
+	<span class="n">rospy</span><span class="o">.</span><span class="n">Subscriber</span><span class="p">(</span><span class="s2">&quot;/reaching_goal/feedback&quot;</span><span class="p">,</span> <span class="n">PlanningActionFeedback</span><span class="p">,</span> <span class="n">check_feedback</span><span class="p">)</span>
+
+	<span class="n">rospy</span><span class="o">.</span><span class="n">spin</span><span class="p">()</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+	<span class="n">main</span><span class="p">()</span>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2023, Miguel Angel Sempere.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
