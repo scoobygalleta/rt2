@@ -1,9 +1,26 @@
 #!/usr/bin/env python3
+"""
+.. module:: client
+    :platform: Unix
+    :synopsis: Node A Client
+.. moduleauthor:: Miguel Angel Sempere msemperevicente@gmail.com
 
-# node A client
-# implements an action client, allowing the user to set a target (x, y)
-# or to cancel it.
- 
+Node that implements an action client, allowing the user to set a target (x, y) or to cancel it by 
+using a basic user interface printed on the command window. It is also possible to call the :mod:`scripts.goal_counter` script (nodeB) 
+to display the number of cancelled and reached goals so far. It also keeps track locally of the entered goals and does not let to delete 
+a goal if no goal is currently active.
+
+Subscribes to:
+    None
+
+Publishes to:
+    /robot_data
+
+Action client:
+    /reaching_goal
+
+"""
+
 import rospy
 import time
 import actionlib #for action
@@ -15,7 +32,12 @@ from geometry_msgs.msg import Point
 goals_count = 0
 
 def get_new_goal(): # ask for a new goal point
-    
+    """
+    This function is used to ask the user for a new goal point. 
+    It creates and returns a variable of the type ``assignment_2_2022::PlanningGoal`` 
+    to be sent to the action server */reaching_goal*.
+
+    """    	   
     # create a goal to be sent to the action server.
     goal = assignment_2_2022.msg.PlanningGoal()
 
@@ -28,7 +50,13 @@ def get_new_goal(): # ask for a new goal point
 
 
 def main(): 
-	
+    """
+    The main function initializes the node *nodeA_client* and
+    publishes to the topic */goal_message* the goal positions 
+    using messages of type ``geometry_msgs::Point``. The service *goal_count* 
+    is used to execute the goal counter (nodeB). It also creates the action server */reaching_goal*.
+
+    """    	
 	# time for Gazebo to start
     time.sleep(6) 
     
@@ -78,7 +106,7 @@ def main():
                 client.cancel_goal()
                 goals_count = 0
             else:
-                 print("There is no goal to be deleted \n")
+                print("There is no goal to be deleted \n")
         elif option == '3':
             request = GoalCountRequest()
             counter_result = counter_service(request)
