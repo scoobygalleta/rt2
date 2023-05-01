@@ -3,7 +3,7 @@ Miguel Ángel Sempere Vicente - s5646720
 ----------------------
 
 This repository contains the ROS package developed for the second assignment of Reseach Track I: *assignment_2_2022*.
-
+Further documentation can be found at <https://scoobygalleta.github.io/rt2/>
 
 ## Building and running
 First of all copy the package folder *assignment_2_2022* into the ROS src folder. The ros package can be built by executing the command `catkin_make` within the root directory of the ROS workspace.
