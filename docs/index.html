@@ -119,7 +119,7 @@
 <dl class="py function">
 <dt class="sig sig-object py" id="scripts.publisher.main">
 <span class="sig-prename descclassname"><span class="pre">scripts.publisher.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/publisher.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.publisher.main" title="Permalink to this definition"></a></dt>
-<dd><p>This function initializes the node <em>publisher</em> and
+<dd><p>Main function that initializes the node <em>publisher</em> and
 subscribes to the topic <em>/odom</em> assigning odom_callback
 as the callback function.</p>
 </dd></dl>
@@ -163,7 +163,8 @@ to be sent to the action server <em>/reaching_goal</em>.</p>
 <dd><p>The main function initializes the node <em>nodeA_client</em> and
 publishes to the topic <em>/goal_message</em> the goal positions
 using messages of type <code class="docutils literal notranslate"><span class="pre">geometry_msgs::Point</span></code>. The service <em>goal_count</em>
-is used to execute the goal counter (nodeB). It also creates the action server <em>/reaching_goal</em>.</p>
+is used to execute the goal counter (nodeB). It also creates the action server <em>/reaching_goal</em> and
+performs goal-related actions based on user input.</p>
 </dd></dl>
 
 </section>
@@ -201,7 +202,8 @@ retuned as a server response message of the type
 <dl class="py function">
 <dt class="sig sig-object py" id="scripts.goal_counter.main">
 <span class="sig-prename descclassname"><span class="pre">scripts.goal_counter.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/goal_counter.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.goal_counter.main" title="Permalink to this definition"></a></dt>
-<dd><p>Main.</p>
+<dd><p>Main function that initializes the ROS node, creates the goal_count service,
+and subscribes to the feedback topic to track reached and cancelled goals.</p>
 </dd></dl>
 
 </section>
@@ -220,6 +222,8 @@ the program keeps waiting for a new one.</p>
 </dd>
 <dt>Publishes to:</dt><dd><p>None</p>
 </dd>
+<dt>ROS parameters:</dt><dd><p>rate_node_c</p>
+</dd>
 </dl>
 <dl class="py function">
 <dt class="sig sig-object py" id="scripts.subscriber.goal_callback">
@@ -234,7 +238,7 @@ is reset every time a new goal is received.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="scripts.subscriber.main">
 <span class="sig-prename descclassname"><span class="pre">scripts.subscriber.</span></span><span class="sig-name descname"><span class="pre">main</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/scripts/subscriber.html#main"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scripts.subscriber.main" title="Permalink to this definition"></a></dt>
-<dd><p>Main.</p>
+<dd><p>Main function that initializes the ROS node <em>subscriber</em>, subscribes to topics, and performs computations based on received data.</p>
 </dd></dl>
 
 <dl class="py function">

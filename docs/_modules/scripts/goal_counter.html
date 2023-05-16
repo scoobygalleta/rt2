@@ -140,7 +140,8 @@
 
 <div class="viewcode-block" id="main"><a class="viewcode-back" href="../../index.html#scripts.goal_counter.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
 <span class="w">	</span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">	Main.</span>
+<span class="sd">    Main function that initializes the ROS node, creates the goal_count service,</span>
+<span class="sd">    and subscribes to the feedback topic to track reached and cancelled goals.</span>
 
 <span class="sd">	&quot;&quot;&quot;</span>	
 	<span class="n">rospy</span><span class="o">.</span><span class="n">init_node</span><span class="p">(</span><span class="s1">&#39;goal_counter&#39;</span><span class="p">)</span>
